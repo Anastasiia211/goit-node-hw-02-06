@@ -1,7 +1,10 @@
+import fs from "fs/promises";
+import path from "path";
 import Contact from "../models/Contact.js";
 import { HttpError } from "../helpers/index.js";
 import { contactAddSchema, contactUpdateSchema, updateFavoriteSchema} from "../models/Contact.js";
 
+const avatarsPath = path.resolve("public", "avatars");
 
 
 const getAll = async (req, res, next) => {

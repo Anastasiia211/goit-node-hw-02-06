@@ -1,5 +1,9 @@
+import fs from "fs/promises";
+import path from "path";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
+import Jimp from "jimp";
 
 import User from "../models/User.js";
 
@@ -7,7 +11,10 @@ import { HttpError } from "../helpers/index.js";
 
 import { userSignupSchema, userSigninSchema } from "../models/User.js";
 
+
 const { JWT_SECRET } = process.env;
+
+const avatarsPath = path.resolve("public", "avatars");
 
 const signup = async (req, res, next) => {
     try{
@@ -24,9 +31,14 @@ const signup = async (req, res, next) => {
         throw HttpError(409, "Email already in use");
     }
 
-    const hashPassword = await bcrypt.hash(password, 10);
+        const hashPassword = await bcrypt.hash(password, 10);
+        const avatar = gravatar.url(email, { s: "100", r: "x", d: "retro" }, false);
 
-    const newUser = await User.create({ ...req.body, password: hashPassword });
+        const newUser = await User.create({
+            ...req.body,
+            password: hashPassword,
+            avatarURL: avatar,
+        });
     res.status(201).json({
         user: {
             email: newUser.email,
@@ -103,10 +115,44 @@ const signout = async (req, res) => {
   }
 };
 
+const updateAvatar = async (req, res, next) => {
+    try {
+        const { _id: owner } = req.user;
+
+        if (!req.file) {
+            return res.status(400).json({ error: "avatar is missing" });
+        }
+        const { path: oldPath, filename } = req.file;
+        const newPath = path.join(avatarsPath, filename);
+
+        await fs.rename(oldPath, newPath);
+
+        const avatarURL = path.join("avatars", filename);
+    
+        Jimp.read(newPath, (error, image) => {
+            if (error) throw error;
+            image.resize(250, 250);
+            image.write(newPath, (error) => {
+                if (error) throw error;
+            });
+        });
+        await User.findOneAndUpdate({ _id: owner }, { avatarURL });
+
+        res.status(200).json({
+            avatarURL,
+        });
+    }
+    catch (error) {
+        next(error);
+        
+    }
+};
+
 
 export default {
     signup,
     signin,
     getCurrent,
     signout,
+    updateAvatar,
 };

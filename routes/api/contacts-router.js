@@ -2,7 +2,7 @@ import express from "express";
 
 import contactsControllers from "../../controllers/contacts-controllers.js";
 
-import { authenticate, isEmptyBody, isValidId, isEmptyBodyFavorite } from "../../middlewares/index.js";
+import { authenticate, isEmptyBody, isValidId, isEmptyBodyFavorite, upload } from "../../middlewares/index.js";
 
 
 
