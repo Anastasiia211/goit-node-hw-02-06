@@ -40,11 +40,15 @@ const add = async (req, res, next) => {
     try {
         const { error } = contactAddSchema.validate(req.body);
         const { _id: owner } = req.user;
+        const { path: oldPath, filename } = req.file;
+        const newPath = path.join(avatarsPath, filename);
+        const avatar = path.join("public", "avatars", filename);
+        await fs.rename(oldPath, newPath);
 
         if (error) {
             throw HttpError(400, error.message);
         }
-        const result = await Contact.create({...req.body, owner});
+        const result = await Contact.create({...req.body, avatar, owner});
         res.status(201).json(result);
     }
     catch (error) {
