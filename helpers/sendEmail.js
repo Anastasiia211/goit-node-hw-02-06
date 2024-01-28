@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import "dotenv/config";
 
-const { UKR_NET_PASSWORD, UKR_NET_FROM } = process.env;
+const {UKR_NET_PASSWORD, UKR_NET_FROM} = process.env;
 
 const nodemailerConfig = {
   host: "smtp.ukr.net",
