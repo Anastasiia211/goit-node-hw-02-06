@@ -59,8 +59,7 @@ const signup = async (req, res, next) => {
     });
 } catch (error) {
     next(error);
-    }
-    
+  }
 };
 
 const verify = async (req, res, next) => {
