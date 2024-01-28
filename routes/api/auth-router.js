@@ -7,6 +7,8 @@ import { isEmptyBody, authenticate, upload } from "../../middlewares/index.js";
 const authRouter = express.Router();
 
 authRouter.post("/register", upload.single("avatarURL"), isEmptyBody, authController.signup);
+authRouter.get("/verify/:verificationCode", authController.verify);
+authRouter.post("/verify", isEmptyBody, authController.resendVerifyEmail);
 authRouter.post("/login", isEmptyBody, authController.signin);
 authRouter.get("/current", authenticate, authController.getCurrent);
 authRouter.post("/logout", authenticate, authController.signout);
