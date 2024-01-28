@@ -158,7 +158,7 @@ const signin = async (req, res, next) => {
     }
     catch (error) {
         next(error);
-    }
+  }
 };
 
 const getCurrent = async (req, res, next) => {
@@ -171,8 +171,7 @@ const getCurrent = async (req, res, next) => {
     }
     catch (error) {
         next(error);
-    }
-     
+  }
 };
 
 const signout = async (req, res) => {
